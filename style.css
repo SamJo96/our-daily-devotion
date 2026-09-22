@@ -1,0 +1,164 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  background: #fdf7f8;
+
+  color: #3f3437;
+
+}
+
+
+.app {
+
+  width: 100%;
+
+  max-width: 650px;
+
+  margin: auto;
+
+  padding: 35px 20px 50px;
+
+}
+
+
+header {
+
+  text-align: center;
+
+  margin-bottom: 30px;
+
+}
+
+
+.small-title {
+
+  letter-spacing: 3px;
+
+  font-size: 11px;
+
+  color: #8b6f78;
+
+}
+
+
+h1 {
+
+  font-size: 36px;
+
+  margin: 10px 0;
+
+}
+
+
+.subtitle {
+
+  font-family: Arial, sans-serif;
+
+  color: #806c72;
+
+}
+
+
+.date-card {
+
+  text-align: center;
+
+  margin-bottom: 20px;
+
+  font-family: Arial, sans-serif;
+
+}
+
+
+.card {
+
+  background: white;
+
+  padding: 25px;
+
+  margin-bottom: 18px;
+
+  border-radius: 20px;
+
+  box-shadow:
+    0 6px 25px rgba(0,0,0,0.06);
+
+}
+
+
+.label {
+
+  font-family: Arial, sans-serif;
+
+  font-size: 11px;
+
+  letter-spacing: 2px;
+
+  font-weight: bold;
+
+  color: #8b6f78;
+
+}
+
+
+.card h2 {
+
+  margin-bottom: 15px;
+
+}
+
+
+.card p {
+
+  line-height: 1.8;
+
+}
+
+
+.buttons {
+
+  display: flex;
+
+  gap: 10px;
+
+  margin-top: 25px;
+
+}
+
+
+button {
+
+  flex: 1;
+
+  padding: 14px;
+
+  border: none;
+
+  border-radius: 14px;
+
+  background: #ead3da;
+
+  color: #3f3437;
+
+  cursor: pointer;
+
+  font-size: 14px;
+
+}
+
+
+button:hover {
+
+  opacity: 0.8;
+
+}
