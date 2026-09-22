@@ -3,62 +3,34 @@ const API_URL =
 
 
 let devotions = [];
-
 let currentIndex = 0;
 
 
+// ===============================
+// LOAD DEVOTIONS
+// ===============================
+
 async function loadDevotions() {
-function completeDevotion() {
 
-  const devotion =
-    devotions[currentIndex];
-
-  const date =
-    String(devotion["Date"]).substring(0, 10);
-
-  localStorage.setItem(
-    "completed-" + date,
-    "true"
-  );
-
-  document.getElementById(
-    "completion-message"
-  ).innerText =
-    "✓ Devotion completed for today.";
-
-  document.getElementById(
-    "complete-button"
-  ).innerText =
-    "✓ Completed";
-}
   try {
 
-    const response =
-      await fetch(API_URL);
+    const response = await fetch(API_URL);
 
-    devotions =
-      await response.json();
+    devotions = await response.json();
 
+    devotions = devotions.filter(
+      row => row["Date"]
+    );
 
-    devotions =
-      devotions.filter(
-        row => row["Date"]
-      );
-
-
-    currentIndex =
-      findToday();
-
+    currentIndex = findToday();
 
     displayDevotion();
 
-
   } catch (error) {
 
-    console.error(error);
+    console.error("Error loading devotions:", error);
 
-    document.getElementById("verse")
-      .innerText =
+    document.getElementById("verse").innerText =
       "Unable to load the devotion.";
 
   }
@@ -66,32 +38,30 @@ function completeDevotion() {
 }
 
 
+// ===============================
+// FIND TODAY
+// ===============================
+
 function findToday() {
 
-  const today =
-    new Date();
+  const today = new Date();
+
+  const todayString =
+    today.getFullYear() +
+    "-" +
+    String(today.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(today.getDate()).padStart(2, "0");
 
 
-  const todayDate =
-    today.toISOString()
-      .split("T")[0];
+  const index = devotions.findIndex(row => {
 
+    const date =
+      String(row["Date"]).substring(0, 10);
 
-  const index =
-    devotions.findIndex(row => {
+    return date === todayString;
 
-      const date =
-        new Date(row["Date"]);
-
-
-      const dateString =
-        date.toISOString()
-          .split("T")[0];
-
-
-      return dateString === todayDate;
-
-    });
+  });
 
 
   return index >= 0 ? index : 0;
@@ -99,22 +69,45 @@ function findToday() {
 }
 
 
+// ===============================
+// DISPLAY DEVOTION
+// ===============================
+
 function displayDevotion() {
 
-  if (!devotions.length) return;
+  if (!devotions.length) {
+    return;
+  }
 
 
   const devotion =
     devotions[currentIndex];
 
 
-  const date =
-    new Date(devotion["Date"]);
+  // Get the date without timezone conversion
+
+  const dateParts =
+    String(devotion["Date"])
+      .substring(0, 10)
+      .split("-");
 
 
-  document.getElementById("date")
-    .innerText =
-    date.toLocaleDateString(
+  const year =
+    Number(dateParts[0]);
+
+  const month =
+    Number(dateParts[1]) - 1;
+
+  const day =
+    Number(dateParts[2]);
+
+
+  const displayDate =
+    new Date(year, month, day);
+
+
+  document.getElementById("date").innerText =
+    displayDate.toLocaleDateString(
       undefined,
       {
         weekday: "long",
@@ -125,17 +118,23 @@ function displayDevotion() {
     );
 
 
+  // Verse reference
+
   document.getElementById(
     "verse-reference"
   ).innerText =
     devotion["Verse Reference"] || "";
 
 
+  // Bible verse
+
   document.getElementById(
     "verse"
   ).innerText =
     devotion["Bible Verse"] || "";
 
+
+  // Devotion
 
   document.getElementById(
     "devotion"
@@ -144,12 +143,16 @@ function displayDevotion() {
     "Your devotion will appear here.";
 
 
+  // Question
+
   document.getElementById(
     "question"
   ).innerText =
     devotion["Question"] ||
     "Your question will appear here.";
 
+
+  // Prayer
 
   document.getElementById(
     "prayer"
@@ -158,14 +161,124 @@ function displayDevotion() {
     "Your prayer will appear here.";
 
 
+  // Daily action
+
   document.getElementById(
     "action"
   ).innerText =
     devotion["Daily Action"] ||
     "Your daily action will appear here.";
 
+
+  // Update completion button
+
+  updateCompletionButton();
+
 }
 
+
+// ===============================
+// COMPLETION
+// ===============================
+
+function completeDevotion() {
+
+  if (!devotions.length) {
+    return;
+  }
+
+
+  const devotion =
+    devotions[currentIndex];
+
+
+  const date =
+    String(devotion["Date"])
+      .substring(0, 10);
+
+
+  // Save completion to this browser
+
+  localStorage.setItem(
+    "completed-" + date,
+    "true"
+  );
+
+
+  updateCompletionButton();
+
+}
+
+
+// ===============================
+// UPDATE COMPLETION BUTTON
+// ===============================
+
+function updateCompletionButton() {
+
+  const button =
+    document.getElementById(
+      "complete-button"
+    );
+
+  const message =
+    document.getElementById(
+      "completion-message"
+    );
+
+
+  if (!button || !message) {
+    return;
+  }
+
+
+  if (!devotions.length) {
+    return;
+  }
+
+
+  const devotion =
+    devotions[currentIndex];
+
+
+  const date =
+    String(devotion["Date"])
+      .substring(0, 10);
+
+
+  const completed =
+    localStorage.getItem(
+      "completed-" + date
+    );
+
+
+  if (completed === "true") {
+
+    button.innerText =
+      "✓ Completed";
+
+    message.innerText =
+      "✓ Devotion completed";
+
+    button.disabled = true;
+
+  } else {
+
+    button.innerText =
+      "♡ Mark today's devotion complete";
+
+    message.innerText = "";
+
+    button.disabled = false;
+
+  }
+
+}
+
+
+// ===============================
+// PREVIOUS DAY
+// ===============================
 
 function previousDay() {
 
@@ -179,6 +292,10 @@ function previousDay() {
 
 }
 
+
+// ===============================
+// NEXT DAY
+// ===============================
 
 function nextDay() {
 
@@ -196,6 +313,10 @@ function nextDay() {
 }
 
 
+// ===============================
+// TODAY
+// ===============================
+
 function today() {
 
   currentIndex =
@@ -206,37 +327,37 @@ function today() {
 }
 
 
-loadDevotions();
-function completeDevotion() {
+// ===============================
+// SERVICE WORKER
+// ===============================
 
-  const devotion = devotions[currentIndex];
+if ("serviceWorker" in navigator) {
 
-  if (!devotion) {
-    return;
-  }
+  window.addEventListener(
+    "load",
+    function() {
 
-  const date =
-    String(devotion["Date"]).substring(0, 10);
+      navigator.serviceWorker.register(
+        "./service-worker.js"
+      ).catch(
+        function(error) {
 
-  localStorage.setItem(
-    "completed-" + date,
-    "true"
+          console.log(
+            "Service worker registration failed:",
+            error
+          );
+
+        }
+      );
+
+    }
   );
 
-  document.getElementById(
-    "completion-message"
-  ).innerText =
-    "✓ Devotion completed for today.";
-
-  document.getElementById(
-    "complete-button"
-  ).innerText =
-    "✓ Completed";
-
-  document.getElementById(
-    "complete-button"
-  ).disabled = true;
 }
 
+
+// ===============================
+// START APP
+// ===============================
 
 loadDevotions();
