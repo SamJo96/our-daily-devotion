@@ -8,7 +8,29 @@ let currentIndex = 0;
 
 
 async function loadDevotions() {
+function completeDevotion() {
 
+  const devotion =
+    devotions[currentIndex];
+
+  const date =
+    String(devotion["Date"]).substring(0, 10);
+
+  localStorage.setItem(
+    "completed-" + date,
+    "true"
+  );
+
+  document.getElementById(
+    "completion-message"
+  ).innerText =
+    "✓ Devotion completed for today.";
+
+  document.getElementById(
+    "complete-button"
+  ).innerText =
+    "✓ Completed";
+}
   try {
 
     const response =
