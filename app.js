@@ -207,3 +207,36 @@ function today() {
 
 
 loadDevotions();
+function completeDevotion() {
+
+  const devotion = devotions[currentIndex];
+
+  if (!devotion) {
+    return;
+  }
+
+  const date =
+    String(devotion["Date"]).substring(0, 10);
+
+  localStorage.setItem(
+    "completed-" + date,
+    "true"
+  );
+
+  document.getElementById(
+    "completion-message"
+  ).innerText =
+    "✓ Devotion completed for today.";
+
+  document.getElementById(
+    "complete-button"
+  ).innerText =
+    "✓ Completed";
+
+  document.getElementById(
+    "complete-button"
+  ).disabled = true;
+}
+
+
+loadDevotions();
