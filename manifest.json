@@ -1,10 +1,10 @@
 {
   "name": "Our Daily Devotion",
   "short_name": "Our Devotion",
-  "description": "A daily Bible devotion for two people growing together from miles away.",
-  "start_url": "./",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#fdf7f8",
   "theme_color": "#ead3da",
-  "orientation": "portrait"
+  "description": "Our daily Bible devotion"
 }
